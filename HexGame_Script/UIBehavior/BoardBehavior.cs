@@ -405,7 +405,7 @@ public class BoardBehavior : MonoBehaviour {
 			
 		}
 		else
-		//if( tileBehaviour.Tile.TileStatus == TILE_STATUS.TILE_STATUS_TERRIAN)
+		if( tileBehaviour.Tile.TileStatus ==  TILE_STATUS.TILE_STATUS_TERRIAN && tileBehaviour.Tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_NONE)
 		{
 					
 				// change the terrian
