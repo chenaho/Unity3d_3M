@@ -258,7 +258,7 @@ public class HumanBehaviour : MonoBehaviour {
 		
 		/// first: get all the tile and data nearby (max totally 6 )
 
-		// 1. get the tile i stand now.
+			// 1. get the tile i stand now.
 			Tile TileStand = BoardClass._game.AllTiles.Single(o => o.X == Piece.Location.X && o.Y == Piece.Location.Y); // get the tile 
 			TileStand.CanPass = true; // release this tile 
 			TileStand.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
@@ -285,35 +285,35 @@ public class HumanBehaviour : MonoBehaviour {
 			AvailableTiles[nRandomChoose].Tile_StandStatus =TILE_STAND_STATUS.TILE_STAND_STATUS_HUMAN; /// hey now i stand on this tile 
 		
 		
-		// 5. decide the action depends on probability		
-		m_HumanPiece_Behaviour_Prev = m_HumanPiece_Behaviour ;
+			// 5. decide the action depends on probability		
+			m_HumanPiece_Behaviour_Prev = m_HumanPiece_Behaviour ;
 		
-		if(AvailableTiles[nRandomChoose].TileStatus  == TILE_STATUS.TILE_STATUS_TERRIAN)
-		{
-			if (AvailableTiles[nRandomChoose].TerrianType == TERRIAN_STATUS.MINE)
+			if(AvailableTiles[nRandomChoose].TileStatus  == TILE_STATUS.TILE_STATUS_TERRIAN)
 			{
-				m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_GETRESOURCE;
+				if (AvailableTiles[nRandomChoose].TerrianType == TERRIAN_STATUS.MINE)
+				{
+					m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_GETRESOURCE;
+				}
+				else // if no mine => 
+				{
+					AvailableTiles[nRandomChoose].TileStatus = TILE_STATUS.TILE_STATUS_BUILDING;  // set this tile as 
+				// decide the behavior by probability //m_Human
+					m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_BUILD; // hey  , now we are make building 
+				}
 			}
-			else // if no mine => 
+			else
+			if(AvailableTiles[nRandomChoose].TileStatus  == TILE_STATUS.TILE_STATUS_BUILDING)
 			{
-				AvailableTiles[nRandomChoose].TileStatus = TILE_STATUS.TILE_STATUS_BUILDING;  // set this tile as 
-			// decide the behavior by probability //m_Human
-				m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_BUILD; // hey  , now we are make building 
-			}
-		}
-		else
-		if(AvailableTiles[nRandomChoose].TileStatus  == TILE_STATUS.TILE_STATUS_BUILDING)
-		{
 			// the same 
 			//AvailableTiles[nRandomChoose].TileStatus = TILE_STATUS.TILE_STATUS_BUILDING;  //  
 			// Use It to Generate Point
-			m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_BUILD_USE; // hey  , now we are make building 
-		}
-		else
-		if(AvailableTiles[nRandomChoose].TileStatus  == TILE_STATUS.TILE_STATUS_TERRIAN && AvailableTiles[nRandomChoose].TerrianType == TERRIAN_STATUS.MINE)
-		{
-			m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_GETRESOURCE; 
-		}
+				m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_BUILD_USE; // hey  , now we are make building 
+			}
+			else
+			if(AvailableTiles[nRandomChoose].TileStatus  == TILE_STATUS.TILE_STATUS_TERRIAN && AvailableTiles[nRandomChoose].TerrianType == TERRIAN_STATUS.MINE)
+			{
+				m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_GETRESOURCE; 
+			}
 			
 		
 		
