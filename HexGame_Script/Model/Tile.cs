@@ -33,12 +33,12 @@ namespace Model
             : base(x, y)
         {
             CanPass = true;
-			
+			IsBattleField = false;
 			TerrianType = TERRIAN_STATUS.FOREST;
         }
 
         public bool CanPass { get; set; }
-		
+		public bool IsBattleField { get; set; }
 		
 		// 
 //		public TERRIAN_STATUS TerrianType{ get; set; }
