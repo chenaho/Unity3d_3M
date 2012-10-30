@@ -217,12 +217,12 @@ public class BoardBehavior : MonoBehaviour {
         return visualPiece;
     }	
 
-	void KillHumanPiece(TileBehaviour tileBehaviour)
+	public void KillHumanPiece(Tile tile)
 	{
-		if( tileBehaviour.Tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_HUMAN)
+		//if( tileBehaviour.Tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_HUMAN)
 		{
 			GameObject human=
-			_gamePieces_Humans.Find( o => ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.X == tileBehaviour.Tile.X  && ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.Y == tileBehaviour.Tile.Y );
+			_gamePieces_Humans.Find( o => ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.X == tile.X  && ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.Y ==tile.Y );
 			_gamePieces_Humans.Remove(human);
 
 			if(human == null)
@@ -231,7 +231,12 @@ public class BoardBehavior : MonoBehaviour {
 				Destroy(human);
 
 			// update the tile stand status
-			tileBehaviour.Tile.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
+			tile.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
+			
+			
+			if ( _gamePieces_Humans.Count ==0)
+				createHumanPiece();			
+			
 		}
 	}
 
@@ -338,10 +343,10 @@ public class BoardBehavior : MonoBehaviour {
 		if( tileBehaviour.Tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_HUMAN)
 		{
 			
-			KillHumanPiece( tileBehaviour);
+			//KillHumanPiece( tileBehaviour);
 			
-			if ( _gamePieces_Humans.Count ==0)
-				createHumanPiece();
+			//if ( _gamePieces_Humans.Count ==0)
+			//	createHumanPiece();
 		}
 		else
 		if( tileBehaviour.Tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_ANIMAL)
@@ -356,13 +361,13 @@ public class BoardBehavior : MonoBehaviour {
 		else
 		if( tileBehaviour.Tile.TileStatus == TILE_STATUS.TILE_STATUS_BUILDING)
 		{
-			
-			foreach ( GameObject o in _gamePieces_Buildings)
-			{
-				int nX = ( (BuildingBehavior)o.GetComponent("BuildingBehavior")).Piece.X;
-				int nY = ( (BuildingBehavior)o.GetComponent("BuildingBehavior")).Piece.Y;
-				Debug.Log( "all buildingLocation-"+nX+","+ nY+";");
-			}
+			/* // Debug
+			//foreach ( GameObject o in _gamePieces_Buildings)
+			//{
+			//	int nX = ( (BuildingBehavior)o.GetComponent("BuildingBehavior")).Piece.X;
+			//	int nY = ( (BuildingBehavior)o.GetComponent("BuildingBehavior")).Piece.Y;
+			//	Debug.Log( "all buildingLocation-"+nX+","+ nY+";");
+			//}*/
 			
 			// make sure the building is on top  , get it by name ?
 			GameObject Building =
