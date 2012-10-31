@@ -19,7 +19,7 @@ public class AnimalBehaviour : MonoBehaviour {
 	GUIText  UI_StatusText;
 	Vector3 TextCoords;
 	
-	bool  m_bDistroy = false;		
+	public bool  m_bDistroy = false;		
 	
 	
 	public enum ANIMAL_BEHAVIOUR 
@@ -86,7 +86,7 @@ public class AnimalBehaviour : MonoBehaviour {
 	void Update () {
 	
 			TextCoords = Camera.main.WorldToScreenPoint(transform.position);
-			UI_StatusText.transform.position = new Vector3(TextCoords.x / Screen.width ,TextCoords.y / Screen.height,0);		
+			UI_StatusText.transform.position = new Vector3(TextCoords.x / Screen.width ,(TextCoords.y-5 )/ Screen.height,0);		
 		
 	}
 	
@@ -135,7 +135,12 @@ public class AnimalBehaviour : MonoBehaviour {
 				if( m_AnimalPiece_Behaviour == ANIMAL_BEHAVIOUR.ANIMAL_BEHAVIOUR_MOVE_CASUAL)
 				{
 					
-					UI_StatusText.text = "Behaviour-Move Casual-"+ (nCurrentSec)%5;	
+					UI_StatusText.text = "Behaviour-Move "+ (nCurrentSec)%5;	
+				}
+				else
+				if(m_AnimalPiece_Behaviour == ANIMAL_BEHAVIOUR.ANIMAL_BEHAVIOUR_FIGHT)	
+				{
+					UI_StatusText.text = "Behaviour-Fight!"+ (nCurrentSec)%5;	
 				}
 				
 				
@@ -163,6 +168,9 @@ public class AnimalBehaviour : MonoBehaviour {
 					if(m_bDistroy == true)
 					{
 						// DistroySelf - show the animation
+							Tile TileStand = BoardClass._game.AllTiles.Single(o => o.X == Piece.Location.X && o.Y == Piece.Location.Y); // get the tile 
+							BoardClass.KillAnimalPiece( TileStand);					
+							
 					}
 			}
 			else
@@ -188,6 +196,26 @@ public class AnimalBehaviour : MonoBehaviour {
 		
 		// 1. get the tile i stand now.
 			Tile TileStand = BoardClass._game.AllTiles.Single(o => o.X == Piece.Location.X && o.Y == Piece.Location.Y); // get the tile 
+		
+			GameObject HumanOnTile = BoardClass._gamePieces_Humans.Find( o => ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.X == TileStand.X  && ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.Y == TileStand.Y );
+			// the same place ... Battle !
+			if(HumanOnTile)
+			{
+					((HumanBehaviour)HumanOnTile.GetComponent("HumanBehaviour")).m_HumanPiece_Behaviour = HumanBehaviour.HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_FIGHT;
+			
+					TileStand.IsBattleField = true;
+				// stay at the same place
+					m_AnimalPiece_Behaviour_Prev = m_AnimalPiece_Behaviour;
+					
+					m_AnimalPiece_Behaviour = ANIMAL_BEHAVIOUR.ANIMAL_BEHAVIOUR_FIGHT;
+					Position_Destination =BoardBehavior.GetWorldCoordinates(TileStand.Location.X, TileStand.Location.Y, 0f);
+			
+					return;
+			}
+			
+		
+		
+		
 			TileStand.CanPass = true; // release this tile 
 			TileStand.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
 

@@ -161,6 +161,11 @@ public class HumanBehaviour : MonoBehaviour {
 				{
 					UI_StatusText.text = "Behaviour-Get Resource-"+ (nCurrentSec)%5;
 				}
+				else
+				if(  m_HumanPiece_Behaviour == HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_FIGHT )
+				{
+					UI_StatusText.text = "Behaviour-Fight-"+ (nCurrentSec)%5;
+				}
 
 				
 			}
@@ -200,14 +205,18 @@ public class HumanBehaviour : MonoBehaviour {
 				{
 					 // Get the building on the tile
 					// Position_Destination
-					
 					//  "AddPoint_Mine"
 					//123 
 						
 					MainGameWorld MainGameWorldClass =    CoreGame.GetComponent("MainGameWorld") as  MainGameWorld;
 					MainGameWorldClass.BroadcastMessage("AddPoint_Mine");
-					
 				}				
+				else
+				if(  m_HumanPiece_Behaviour == HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_FIGHT )
+				{
+					//UI_StatusText.text = "Behaviour-Fight-"+ (nCurrentSec)%5;
+					//m_bDistroy = true;
+				}
 				
 				m_HumanStatus = HUMAN_STATUS.HUMAN_STATUS_FINISH;
 				UI_StatusText.text = "Finish-"+(nCurrentSec)%5;
@@ -232,6 +241,8 @@ public class HumanBehaviour : MonoBehaviour {
 					if(m_bDistroy == true)
 					{
 						// DistroySelf - show the animation
+						Tile TileStand = BoardClass._game.AllTiles.Single(o => o.X == Piece.Location.X && o.Y == Piece.Location.Y); // get the tile 
+						BoardClass.KillHumanPiece( TileStand);
 					}
 			}
 			else
@@ -251,15 +262,41 @@ public class HumanBehaviour : MonoBehaviour {
 	// 
 	void CalculateGameLogic()
 	{
-		//return;
-		// update position
-		
 		//if(BoardClass == null) return;
 		
 		/// first: get all the tile and data nearby (max totally 6 )
-
+		
+		
+		
 			// 1. get the tile i stand now.
 			Tile TileStand = BoardClass._game.AllTiles.Single(o => o.X == Piece.Location.X && o.Y == Piece.Location.Y); // get the tile 
+		
+			// First , find if the Animal Stand on the same place 
+			GameObject AnimalOnTile = BoardClass._gamePieces_Animals.Find( o => ( (AnimalBehaviour)o.GetComponent("AnimalBehaviour")).Piece.X == TileStand.X  && ( (AnimalBehaviour)o.GetComponent("AnimalBehaviour")).Piece.Y == TileStand.Y );
+			// the same place ... Battle !
+			if(AnimalOnTile)
+			{
+				//TileStand.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_BOTH;
+				TileStand.IsBattleField = true;
+			
+					if( UnityEngine.Random.Range( 0 , 2) ==0  )
+						m_bDistroy = true;
+					else
+						((AnimalBehaviour)AnimalOnTile.GetComponent("AnimalBehaviour")).m_bDistroy = true;
+			
+				// stay at the same place
+					m_HumanPiece_Behaviour_Prev = m_HumanPiece_Behaviour ;
+					m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_FIGHT;
+					Position_Destination =BoardBehavior.GetWorldCoordinates(TileStand.Location.X, TileStand.Location.Y, 0f);
+			
+			
+					// to decide who win / lose
+			
+					return;
+			}
+		
+		
+			// or just do normal process
 			TileStand.CanPass = true; // release this tile 
 			TileStand.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
 		
@@ -279,13 +316,11 @@ public class HumanBehaviour : MonoBehaviour {
 			nNewY = AvailableTiles[nRandomChoose].Y;
 			//Piece_Destination = new GamePiece( nNewX , nNewY);
 		
-		
 			// 4. 
 			AvailableTiles[nRandomChoose].CanPass = false; // occupy now 
 			AvailableTiles[nRandomChoose].Tile_StandStatus =TILE_STAND_STATUS.TILE_STAND_STATUS_HUMAN; /// hey now i stand on this tile 
 		
-		
-			// 5. decide the action depends on probability		
+			// 5. decide the action depends on probability	
 			m_HumanPiece_Behaviour_Prev = m_HumanPiece_Behaviour ;
 		
 			if(AvailableTiles[nRandomChoose].TileStatus  == TILE_STATUS.TILE_STATUS_TERRIAN)
@@ -315,25 +350,11 @@ public class HumanBehaviour : MonoBehaviour {
 				m_HumanPiece_Behaviour = HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_GETRESOURCE; 
 			}
 			
-		
-		
-		
-		
-		/*
-			// get all the tiles player can pass
-             foreach (Tile n in TileStand.Neighbours)  // 
-             {
-					nNewX = n.X;
-					nNewY = n.Y;
-			 		n.TileStatus =TILE_STATUS.TILE_STATUS_STAND_HUMAN; // people sand on their 
-             }		
-		*/
-		
 			
-		/// To process the AI activity			
-		Piece = new GamePiece(new Point(nNewX, nNewY));
-		//transform.position =  BoardBehavior.GetWorldCoordinates(Piece.X, Piece.Y, 0f);
-		Position_Destination =BoardBehavior.GetWorldCoordinates(Piece.X, Piece.Y, 0f);
+			/// To process the AI activity			
+			Piece = new GamePiece(new Point(nNewX, nNewY));
+			//transform.position =  BoardBehavior.GetWorldCoordinates(Piece.X, Piece.Y, 0f);
+			Position_Destination =BoardBehavior.GetWorldCoordinates(Piece.X, Piece.Y, 0f);
 		
 		
 		
