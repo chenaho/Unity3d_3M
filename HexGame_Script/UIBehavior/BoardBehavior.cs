@@ -264,12 +264,12 @@ public class BoardBehavior : MonoBehaviour {
     }		
 	
 	
-	void KillAnimalPiece(TileBehaviour tileBehaviour)
+	public void KillAnimalPiece(Tile tile)
 	{
-		if( tileBehaviour.Tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_ANIMAL)
+		//if( tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_ANIMAL)
 		{
 			GameObject animal=
-			_gamePieces_Animals.Find( o => ( (AnimalBehaviour)o.GetComponent("AnimalBehaviour")).Piece.X == tileBehaviour.Tile.X  && ( (AnimalBehaviour)o.GetComponent("AnimalBehaviour")).Piece.Y == tileBehaviour.Tile.Y );
+			_gamePieces_Animals.Find( o => ( (AnimalBehaviour)o.GetComponent("AnimalBehaviour")).Piece.X == tile.X  && ( (AnimalBehaviour)o.GetComponent("AnimalBehaviour")).Piece.Y == tile.Y );
 			_gamePieces_Animals.Remove(animal);
 
 			if(animal == null)
@@ -278,7 +278,11 @@ public class BoardBehavior : MonoBehaviour {
 				Destroy(animal);
 
 			// update the tile stand status
-			tileBehaviour.Tile.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
+			tile.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
+			
+			
+			if(  _gamePieces_Animals.Count ==0 )
+				createAnimalPiece();			
 		}
 	}	
 	
@@ -352,10 +356,9 @@ public class BoardBehavior : MonoBehaviour {
 		if( tileBehaviour.Tile.Tile_StandStatus == TILE_STAND_STATUS.TILE_STAND_STATUS_ANIMAL)
 		{
 			// kill animal option is available
-			KillAnimalPiece( tileBehaviour);
+			KillAnimalPiece( tileBehaviour.Tile);
 			
-			if(  _gamePieces_Animals.Count ==0 )
-				createAnimalPiece();
+
 			
 		}
 		else
