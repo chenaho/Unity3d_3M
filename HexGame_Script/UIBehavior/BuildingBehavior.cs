@@ -7,6 +7,30 @@ public class BuildingBehavior : MonoBehaviour {
 
 	public GamePiece Piece; // Location
 	
+	public enum BUILDING_TYPE{
+		BUILDING_TYPE_CULTURE,
+		BUILDING_TYPE_SCIENCE,
+		BUILDING_TYPE_MINE,
+		BUILDING_TYPE_HEALTH,
+		BUILDING_TYPE_COUNT
+	};
+	
+	public BUILDING_TYPE m_BuildingType;
+	
+	
+	enum BUILDING_LEVEL{
+		BUILDING_LEVEL_LV01,
+		BUILDING_LEVEL_LV02,
+		BUILDING_LEVEL_LV03,
+		BUILDING_LEVEL_LV04,
+		BUILDING_LEVEL_LV05,
+		BUILDING_LEVEL_LV06,
+		BUILDING_LEVEL_COUNT
+	};
+	
+	BUILDING_LEVEL m_CurrentLevel;
+	
+	// point_
 	
 	// GUIText ShowStatus	
 	// UI
@@ -18,7 +42,9 @@ public class BuildingBehavior : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-	
+		m_BuildingType = BUILDING_TYPE.BUILDING_TYPE_CULTURE;
+		m_CurrentLevel = BUILDING_LEVEL.BUILDING_LEVEL_LV01;
+		
 		
 		/// Init the TextUI
 		GameObject go  = new GameObject("Text_Building_"+ this.name);
@@ -33,8 +59,6 @@ public class BuildingBehavior : MonoBehaviour {
 		// GText.material.color = Color.Green;		
 		UI_StatusText.transform.position=new Vector3(0,0,0);
 		TextCoords = new Vector3(0,0,0);		
-		
-		
 		
 	}
 	

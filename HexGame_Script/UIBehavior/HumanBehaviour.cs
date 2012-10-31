@@ -177,18 +177,30 @@ public class HumanBehaviour : MonoBehaviour {
 					/// create new building 
 					Quaternion rotation = Quaternion.identity;
 					rotation.eulerAngles = new Vector3(180,0,0);
-					newBuilding = Instantiate( BoardClass.Building_Culture , Position_Destination, rotation)  as GameObject;	
-					newBuilding.transform.parent =   GameObject.Find("Environments_Building").transform;
+					
+					BuildingBehavior.BUILDING_TYPE  nBuildType = (BuildingBehavior.BUILDING_TYPE)UnityEngine.Random.Range( 0 , (int)BuildingBehavior.BUILDING_TYPE.BUILDING_TYPE_COUNT);
+					if(nBuildType == BuildingBehavior.BUILDING_TYPE.BUILDING_TYPE_CULTURE)
+						newBuilding = Instantiate( BoardClass.Building_Culture , Position_Destination, rotation)  as GameObject;	
+					else
+					if(nBuildType == BuildingBehavior.BUILDING_TYPE.BUILDING_TYPE_HEALTH)	
+						newBuilding = Instantiate( BoardClass.Building_Health , Position_Destination, rotation)  as GameObject;	
+					else
+					if(nBuildType == BuildingBehavior.BUILDING_TYPE.BUILDING_TYPE_SCIENCE)	
+						newBuilding = Instantiate( BoardClass.Building_Science , Position_Destination, rotation)  as GameObject;	
+					else
+						newBuilding = Instantiate( BoardClass.Building_Culture , Position_Destination, rotation)  as GameObject;	
+					
+					
 					
 					// add location info to
-			        var pb = (BuildingBehavior)newBuilding.GetComponent("BuildingBehavior");
-        			//pb.Piece = new GamePiece( new Point(Position_Destination.x , Position_Destination.y  )  ) ;
-					//pb.Piece = new GamePiece(  new Point( (int)Position_Destination.x , (int)Position_Destination.y )  ) ;
-					//pb.Piece = new GamePiece(  new Point( (int)Position_Destination.x+1 , (int)Position_Destination.y+1 )  ) ; // 123
+			        BuildingBehavior pb = (BuildingBehavior)newBuilding.GetComponent("BuildingBehavior");
+					pb.m_BuildingType = nBuildType;
+					//m_BuildingType
+					
+					
+					newBuilding.transform.parent =   GameObject.Find("Environments_Building").transform;
 					pb.Piece = new GamePiece(  new Point(  Piece.X , Piece.Y) );
-					
 					BoardClass._gamePieces_Buildings.Add(newBuilding);
-					
 				}
 				else
 				if (m_HumanPiece_Behaviour == HUMAN_BEHAVIOUR.HUMAN_BEHAVIOUR_BUILD_USE)
