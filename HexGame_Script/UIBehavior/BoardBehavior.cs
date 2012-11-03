@@ -63,6 +63,9 @@ public class BoardBehavior : MonoBehaviour {
 		
 		//createAnimalPiece();	
 		createAnimalPiece();
+		createAnimalPiece();
+		createAnimalPiece();
+		createAnimalPiece();
 		
 		
         Camera.mainCamera.transform.position = new Vector3(Width / 2.0f * Spacing - Spacing, Height / 2.0f * Spacing - Spacing, -(Width + Height) / 2 - 5);		
