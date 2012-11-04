@@ -8,6 +8,8 @@ public class BoardBehavior : MonoBehaviour {
 	
 	
     public GameObject Piece; // Actor (auto)
+    public GameObject Piece_Elite; // Actor (auto)	
+	
     public GameObject PieceAnimal; // Actor (auto)	
 	
 	public GameObject Tile;  // Hex
@@ -56,8 +58,8 @@ public class BoardBehavior : MonoBehaviour {
 		_gamePieces_Buildings = new List<GameObject>();		
 		
 		CreateBoard();
-		 createHumanPiece();
-		createHumanPiece();
+		 createHumanPiece( HumanBehaviour.HUMAN_TYPE.HUMAN_TYPE_NORMAL);
+		createHumanPiece( HumanBehaviour.HUMAN_TYPE.HUMAN_TYPE_ELITE);
 		//createHumanPiece();
 		/// createAnimalPiece(); // 4~7
 		
@@ -193,12 +195,14 @@ public class BoardBehavior : MonoBehaviour {
 	
 	
 	
-	public void createHumanPiece()
+	public void createHumanPiece( HumanBehaviour.HUMAN_TYPE m_HumanType )
 	{		
 		// Todo:  check the position
 		//var startPiece = new GamePiece(new Point(2, 2)); // Position provide by
 		var startPiece = new GamePiece(GetAvailablePosition()  ); // Position provide by
-		GameObject NewHuman = CreatePiece_Human(startPiece, Color.blue);
+		GameObject NewHuman = CreatePiece_Human(startPiece, m_HumanType);
+		
+		
 		NewHuman.transform.parent = Actor_Humans.transform ;
 		NewHuman.name = "Human_Adam";
 		//Actor_Humans
@@ -207,9 +211,16 @@ public class BoardBehavior : MonoBehaviour {
 	}
 	
 	
-    private GameObject CreatePiece_Human(GamePiece piece, Color colour)
+    //private GameObject CreatePiece_Human(GamePiece piece,Color colour)
+	private GameObject CreatePiece_Human(GamePiece piece,  HumanBehaviour.HUMAN_TYPE type)
     {
-        var visualPiece = (GameObject)Instantiate(Piece);
+		GameObject visualPiece;
+		if(type == HumanBehaviour.HUMAN_TYPE.HUMAN_TYPE_NORMAL)
+        	 visualPiece = (GameObject)Instantiate(Piece);
+		else// Elite
+			 visualPiece = (GameObject)Instantiate(Piece_Elite);
+		
+		
         visualPiece.transform.position = GetWorldCoordinates(piece.X, piece.Y, 0f);
         //var mat = new Material(Shader.Find(" Glossy")) {color = colour};
         //visualPiece.renderer.material = mat;
@@ -227,18 +238,25 @@ public class BoardBehavior : MonoBehaviour {
 			GameObject human=
 			_gamePieces_Humans.Find( o => ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.X == tile.X  && ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece.Y ==tile.Y );
 			_gamePieces_Humans.Remove(human);
-
+			
+			// ( (HumanBehaviour)o.GetComponent("HumanBehaviour")).Piece
+			
+			HumanBehaviour.HUMAN_TYPE killedType = HumanBehaviour.HUMAN_TYPE.HUMAN_TYPE_NORMAL;
 			if(human == null)
 				Debug.LogError( "Logic Error-destroy human object");
 			else
+			{
+				killedType = ( (HumanBehaviour)human.GetComponent("HumanBehaviour")).m_HumanType;
+				Instantiate(  ParticlePrefab_Firework , GetWorldCoordinates( ( human.GetComponent("HumanBehaviour") as HumanBehaviour).Piece.X , ( human.GetComponent("HumanBehaviour") as HumanBehaviour).Piece.Y,0)+ new Vector3(0f,0f,-0.5f)    , Quaternion.identity);				
 				Destroy(human);
+			}
 
 			// update the tile stand status
 			tile.Tile_StandStatus = TILE_STAND_STATUS.TILE_STAND_STATUS_NONE;
 			
 			
 			if ( _gamePieces_Humans.Count ==0)
-				createHumanPiece();			
+				createHumanPiece( killedType );			
 			
 		}
 	}
