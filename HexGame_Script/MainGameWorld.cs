@@ -6,6 +6,14 @@ using System.Collections.Generic;
 public class MainGameWorld : MonoBehaviour {
 
 
+	 
+	enum CULTURE_LIMIT{
+		CULTURE_LIMIT_01=10,
+		CULTURE_LIMIT_02=30,
+		CULTURE_LIMIT_03=75,
+		CULTURE_LIMIT_04=150,
+		CULTURE_LIMIT_05=400,
+	};
 	
 	
 	// Game-Turn Manager 
@@ -32,10 +40,28 @@ public class MainGameWorld : MonoBehaviour {
 	float UI_Start_Top= 70;
 	float UI_Space= 15;
 	
-	bool bDebugShowMsg_Creature = true;
-	bool bDebugShowMsg_Building = true;
+	public bool bDebugShowMsg_Creature = true;
+	public bool bDebugShowMsg_Building = true;
 	
 	#endregion
+	
+	
+	#region UIToolkit UI
+	private UITextInstance text1, text2, text3, text4, text5, text6;		
+	
+	UIText UIText_Era;
+	public UIToolkit buttonToolkit;
+	public UIToolkit textToolkit;
+	UITextInstance TextUI_ERA;
+		
+	UIProgressBar progressBar_Culture ;
+	UIProgressBar progressBar_Healtth ; 
+	UIProgressBar progressBar_Science;
+	public UIProgressBar progressBar_Base;	
+	
+//	string debugString;
+	#endregion
+	
 	
 	
 	// List - Building 
@@ -157,6 +183,49 @@ public class MainGameWorld : MonoBehaviour {
 	
 		 CoreBoard = (BoardBehavior) GetComponent("BoardBehavior");
 		
+		
+		
+		progressBar_Base = UIProgressBar.create(buttonToolkit, "UI_Base.png", 0, 0,true,2  );
+		//progressBar_Science.positionFromBottomLeft( .15f, .02f );
+		progressBar_Base.positionFromTopLeft( 20f/Screen.height, 960f/Screen.width );
+		progressBar_Base.resizeTextureOnChange = true;
+		progressBar_Base.value = 1f;				
+		
+//		debugString = "";
+		// Progress/Health bar
+		progressBar_Culture = UIProgressBar.create( buttonToolkit,"UI_Ball.png", 0, 0,false,1 );
+		//progressBar_Culture = UIProgressBar.create( "UI_Ball.png", 0, 0 );
+		//progressBar.positionFromLeft
+		//progressBar_Culture.positionFromTopRight( .17f, .40f );
+		progressBar_Culture.positionFromTopLeft(  30f/Screen.height,   685f/Screen.width);
+		
+		progressBar_Culture.resizeTextureOnChange = true;
+		progressBar_Culture.value = 0.0f;
+		
+		
+		
+		progressBar_Healtth = UIProgressBar.create(buttonToolkit, "UI_Ball.png", 0, 0 ,true,1 );
+		progressBar_Healtth.positionFromTopLeft(30f/Screen.height, 830f/Screen.width);
+		progressBar_Healtth.resizeTextureOnChange = true;
+		progressBar_Healtth.value = 1.0f;		
+		
+		progressBar_Science = UIProgressBar.create(buttonToolkit, "UI_Ball.png", 0, 0,true,1  );
+		//progressBar_Science.positionFromBottomLeft( .15f, .02f );
+		progressBar_Science.positionFromTopLeft(30f/Screen.height, 916f/Screen.width );
+		progressBar_Science.resizeTextureOnChange = true;
+		progressBar_Science.value = 1.0f;		
+		
+	
+		
+		
+		//StartCoroutine( animateProgressBar( progressBar_Culture ) );		
+		
+		
+		
+		UIText_Era = new UIText( textToolkit, "prototype", "prototype.png" );
+		TextUI_ERA = UIText_Era.addTextInstance( m_ERA_NAMEDic[  m_currentERA ], 0, 0 );
+        //helloText.positionFromTopLeft( 0.1f, 0.05f );			
+		TextUI_ERA.positionFromTopLeft( 0.1f, 0.05f );					
 
 	}
 	
@@ -188,10 +257,11 @@ public class MainGameWorld : MonoBehaviour {
 		if( CoreBoard._gamePieces_Animals.Count !=0 )
 			CoreBoard.Actor_Animals.BroadcastMessage("UpdateGameLogic", GUITimer );	
 		
-		// UpdatePieceLogic () / / human , Animal
-		// UpdatePieceAnimation() / / human , Animal , 
-		
-		
+
+		/*if( progressBar_Base.position.ToString() != null)
+			debugString ="data:"+ progressBar_Base.position.ToString();
+		else
+			debugString =  "no data!!!";*/		
 		
 	}
 	
@@ -199,48 +269,38 @@ public class MainGameWorld : MonoBehaviour {
 	void UpdateERA()
 	{
 		//m_currentERA
-		if (m_currentERA== ERA_TYPE.ERA_TYPE_01 &&   Point_Culture >=10 )
-		{
-			m_currentERA = ERA_TYPE.ERA_TYPE_02;
-			m_Current_HumanRobust__DownLimit = 2;
-			m_Current_HumanRobust__UPLimit = 3;
-		}
-		
-		if (m_currentERA== ERA_TYPE.ERA_TYPE_02 &&   Point_Culture >=30 )
-		{
-			m_currentERA = ERA_TYPE.ERA_TYPE_03;
-			m_Current_HumanRobust__DownLimit = 4;
-			m_Current_HumanRobust__UPLimit = 5;			
-		}		
-
+		if (m_currentERA== ERA_TYPE.ERA_TYPE_01 &&   Point_Culture >= (int)CULTURE_LIMIT.CULTURE_LIMIT_01 )
+			SetERAData( ERA_TYPE.ERA_TYPE_02 , 2,3);
+		else
+		if (m_currentERA== ERA_TYPE.ERA_TYPE_02 &&   Point_Culture >= (int)CULTURE_LIMIT.CULTURE_LIMIT_02 )
+			SetERAData( ERA_TYPE.ERA_TYPE_03 , 4, 5);
 		// 03-> 04
-		if (m_currentERA== ERA_TYPE.ERA_TYPE_03 &&   Point_Culture >=75 )
-		{
-			m_currentERA = ERA_TYPE.ERA_TYPE_04;
-			m_Current_HumanRobust__DownLimit = 6;
-			m_Current_HumanRobust__UPLimit = 7;			
-		}		
-
-
-		if (m_currentERA== ERA_TYPE.ERA_TYPE_04 &&   Point_Culture >=150 )
-		{
-			m_currentERA = ERA_TYPE.ERA_TYPE_05;
-			m_Current_HumanRobust__DownLimit = 8;
-			m_Current_HumanRobust__UPLimit = 9;			
-		}		
+		else
+		if (m_currentERA== ERA_TYPE.ERA_TYPE_03 &&   Point_Culture >= (int)CULTURE_LIMIT.CULTURE_LIMIT_03 )
+			SetERAData( ERA_TYPE.ERA_TYPE_04 , 6, 7);
+		else
+		if (m_currentERA== ERA_TYPE.ERA_TYPE_04 &&   Point_Culture >= (int)CULTURE_LIMIT.CULTURE_LIMIT_04 )
+			SetERAData( ERA_TYPE.ERA_TYPE_05 , 8, 9);
+		else
+		if (m_currentERA== ERA_TYPE.ERA_TYPE_05 &&   Point_Culture >= (int)CULTURE_LIMIT.CULTURE_LIMIT_05 )
+			SetERAData( ERA_TYPE.ERA_TYPE_06 , 10,11);
 		
-
-		if (m_currentERA== ERA_TYPE.ERA_TYPE_05 &&   Point_Culture >=400 )
-		{
-			m_currentERA = ERA_TYPE.ERA_TYPE_06;
-			m_Current_HumanRobust__DownLimit = 10;
-			m_Current_HumanRobust__UPLimit = 11;
-		}		
-		
-		
-		
-		
+			progressBar_Culture.value = (float)Point_Culture / (int)CULTURE_LIMIT.CULTURE_LIMIT_05;		
 	}
+	
+	void SetERAData( ERA_TYPE newEra , int nRobust_DownLimit, int nRobust_UpLimit)
+	{
+			m_currentERA = newEra;
+			m_Current_HumanRobust__DownLimit = nRobust_DownLimit;
+			m_Current_HumanRobust__UPLimit = nRobust_UpLimit;					
+		
+			TextUI_ERA.text = m_ERA_NAMEDic[  m_currentERA ];
+		
+			CoreBoard.SendMessage("createHumanPiece" , HumanBehaviour.HUMAN_TYPE.HUMAN_TYPE_NORMAL);
+	}
+
+	
+	
 	
 	// TODO: KAMA rule
 	void CheckKAMA()
@@ -307,7 +367,7 @@ public class MainGameWorld : MonoBehaviour {
 		if( GUI.Button( new Rect(UI_Start_Left,UI_Start_Top + UI_Space*11,180,20),"add Human Unit") )
 		{
 			//createHumanPiece
-			CoreBoard.createHumanPiece();
+			CoreBoard.createHumanPiece(HumanBehaviour.HUMAN_TYPE.HUMAN_TYPE_NORMAL);
 			
 			//GameObject destroyObj = CoreBoard._gamePieces_Humans.Find( o => o.name =="Human_Adam");
 			//Destroy( destroyObj);
@@ -369,7 +429,25 @@ public class MainGameWorld : MonoBehaviour {
 	
 	
 	
-	
+
+	private IEnumerator animateProgressBar( UIProgressBar progressBar )
+	{
+		float value = 0.0f;
+		while( true )
+		{
+			// Make sure the progress doesnt exceed 1
+			if( value > 1.0f )
+				// Swap the progressBars resizeTextureOnChange property
+			//	progressBar.resizeTextureOnChange = !progressBar.resizeTextureOnChange;
+				value = 0.0f;
+			else
+				value += 0.01f;
+			
+			progressBar.value = value;			
+			yield return 0;
+		}
+	}			
+		
 
 	
 	
