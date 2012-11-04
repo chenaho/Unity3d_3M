@@ -54,15 +54,26 @@ public class HumanBehaviour : MonoBehaviour {
 	int m_nCurrentFrame;
 	public HUMAN_STATUS m_HumanStatus;
 	
+	// HUMAN Type: Normal , Elite
+	// TODO : redifine as a game behavoir (component pattern)
+	public enum HUMAN_TYPE
+	{
+		HUMAN_TYPE_NORMAL,
+		HUMAN_TYPE_ELITE,
+	}
+	
+	public HUMAN_TYPE m_HumanType;
+	
+	
 	
 	// Use this for initialization
 	void Start () 
 	{
-		
-		
+		m_HumanType = HUMAN_TYPE.HUMAN_TYPE_NORMAL;
 //		Piece.m_StrongValue=2;  //
 		CoreGame = GameObject.Find("coreGame");
 		BoardClass =    CoreGame.GetComponent("BoardBehavior") as  BoardBehavior;
+
 		
 		
 		/// Init the TextUI
@@ -85,6 +96,8 @@ public class HumanBehaviour : MonoBehaviour {
 		m_nCurrentFrame = 0 ;
 		
 		m_bDistroy = false;
+		
+		UI_StatusText.enabled = ( CoreGame.GetComponent("MainGameWorld") as MainGameWorld).bDebugShowMsg_Creature;
 	}
 	
 	

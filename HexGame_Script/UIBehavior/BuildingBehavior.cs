@@ -45,6 +45,7 @@ public class BuildingBehavior : MonoBehaviour {
 		m_BuildingType = BUILDING_TYPE.BUILDING_TYPE_CULTURE;
 		m_CurrentLevel = BUILDING_LEVEL.BUILDING_LEVEL_LV01;
 		
+
 		
 		/// Init the TextUI
 		GameObject go  = new GameObject("Text_Building_"+ this.name);
@@ -59,6 +60,9 @@ public class BuildingBehavior : MonoBehaviour {
 		// GText.material.color = Color.Green;		
 		UI_StatusText.transform.position=new Vector3(0,0,0);
 		TextCoords = new Vector3(0,0,0);		
+		
+		GameObject CoreGame = GameObject.Find("coreGame");
+		UI_StatusText.enabled = ( CoreGame.GetComponent("MainGameWorld") as MainGameWorld).bDebugShowMsg_Building;		
 		
 	}
 	

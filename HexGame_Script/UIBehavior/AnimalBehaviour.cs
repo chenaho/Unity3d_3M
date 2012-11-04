@@ -55,11 +55,13 @@ public class AnimalBehaviour : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-
+			
 		Piece.m_StrongValue=2;
 		
 		CoreGame = GameObject.Find("coreGame");
 		BoardClass =    CoreGame.GetComponent("BoardBehavior") as  BoardBehavior;
+		
+		
 		
 		/// Init the TextUI
 		GameObject go  = new GameObject("Text_"+ this.name);
@@ -80,6 +82,8 @@ public class AnimalBehaviour : MonoBehaviour {
 		m_nCurrentFrame = 0 ;
 		
 		m_bDistroy = false;		
+		
+		UI_StatusText.enabled = ( CoreGame.GetComponent("MainGameWorld") as MainGameWorld).bDebugShowMsg_Creature;
 	}
 	
 	// Update is called once per frame
